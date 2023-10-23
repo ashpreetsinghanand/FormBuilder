@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ReactNode, Suspense } from 'react';
 import { Separator } from '@/components/ui/separator';
+import CreateFormBtn from '@/components/CreateFormButton';
 
 export default function Home() {
   return (
@@ -18,19 +19,19 @@ export default function Home() {
       <Suspense fallback={<StatsCards loading={true} />}>
         <CardStatsWrapper />
       </Suspense>
-      {/* <Separator className="my-6" />
+      <Separator className="my-6" />
       <h2 className="text-4xl font-bold col-span-2">Your forms</h2>
       <Separator className="my-6" />
       <div className="grid gric-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CreateFormBtn />
-        <Suspense
+        {/* <Suspense
           fallback={[1, 2, 3, 4].map((el) => (
             <FormCardSkeleton key={el} />
           ))}
         >
           <FormCards />
-        </Suspense>
-      </div> */}
+        </Suspense> */}
+      </div>
     </div>
   )
 }
