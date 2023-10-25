@@ -16,5 +16,5 @@ async function BuilderPage({
     }
     return <FormBuilder form={form} />;
   }
-  
+
   export default BuilderPage;

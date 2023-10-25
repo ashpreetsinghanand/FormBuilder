@@ -1,52 +1,37 @@
-import { Active, DragOverlay, useDndMonitor } from "@dnd-kit/core";
-import React, { useState } from "react";
-import { SidebarBtnElementDragOverlay } from "./SidebarBtnElement";
-import { ElementsType, FormElements } from "./FormElements";
+import React from "react";
+import { Button } from "./ui/button";
+import { MdPreview } from "react-icons/md";
 import useDesigner from "./hooks/useDesigner";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { FormElements } from "./FormElements";
 
-function DragOverlayWrapper() {
+function PreviewDialogBtn() {
     const { elements } = useDesigner();
-    const [draggedItem, setDraggedItem] = useState<Active | null>(null);
 
-    useDndMonitor({
-        onDragStart: (event) => {
-        setDraggedItem(event.active);
-        },
-        onDragCancel: () => {
-        setDraggedItem(null);
-        },
-        onDragEnd: () => {
-        setDraggedItem(null);
-        },
-    });
-
-    if (!draggedItem) return null;
-
-    let node = <div>No drag overlay</div>;
-    const isSidebarBtnElement = draggedItem.data?.current?.isDesignerBtnElement;
-
-    if (isSidebarBtnElement) {
-        const type = draggedItem.data?.current?.type as ElementsType;
-        node = <SidebarBtnElementDragOverlay formElement={FormElements[type]} />;
-    }
-
-    const isDesignerElement = draggedItem.data?.current?.isDesignerElement;
-    if (isDesignerElement) {
-        const elementId = draggedItem.data?.current?.elementId;
-        const element = elements.find((el) => el.id === elementId);
-        if (!element) node = <div>Element not found!</div>;
-        else {
-        const DesignerElementComponent = FormElements[element.type].designerComponent;
-
-        node = (
-            <div className="flex bg-accent border rounded-md h-[120px] w-full py-2 px-4 opacity-80 pointer pointer-events-none">
-            <DesignerElementComponent elementInstance={element} />
+    return (
+        <Dialog>
+        <DialogTrigger asChild>
+            <Button variant={"outline"} className="gap-2">
+            <MdPreview className="h-6 w-6" />
+            Preview
+            </Button>
+        </DialogTrigger>
+        <DialogContent className="w-screen h-screen max-h-screen max-w-full flex flex-col flex-grow p-0 gap-0">
+            <div className="px-4 py-2 border-b">
+            <p className="text-lg font-bold text-muted-foreground">Form preview</p>
+            <p className="text-sm text-muted-foreground">This is how your form will look like to your users.</p>
             </div>
-        );
-        }
-    }
-
-    return <DragOverlay>{node}</DragOverlay>;
+            <div className="bg-accent flex flex-col flex-grow items-center justify-center p-4 bg-[url(/paper.svg)] dark:bg-[url(/paper-dark.svg)] overflow-y-auto">
+            <div className="max-w-[620px] flex flex-col gap-4 flex-grow bg-background h-full w-full rounded-2xl p-8 overflow-y-auto">
+                {elements.map((element) => {
+                const FormComponent = FormElements[element.type].formComponent;
+                return <FormComponent key={element.id} elementInstance={element} />;
+                })}
+            </div>
+            </div>
+        </DialogContent>
+        </Dialog>
+    );
 }
 
-export default DragOverlayWrapper;
+export default PreviewDialogBtn;
